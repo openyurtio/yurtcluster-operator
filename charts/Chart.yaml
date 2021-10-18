@@ -1,0 +1,8 @@
+name: yurtcluster-operator
+description: The operator to manage edge cluster based on openyurt
+type: application
+maintainers:
+  - name: SataQiu
+    email: shidaqiu2018@gmail.com
+version: 1.0.2
+appVersion: 1.0.2

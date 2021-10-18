@@ -1,0 +1,3 @@
+resources:
+- manager_rbac.yaml
+- agent_rbac.yaml
