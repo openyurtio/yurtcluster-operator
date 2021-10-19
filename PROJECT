@@ -1,0 +1,7 @@
+domain: openyurt.io
+repo: github.com/openyurtio/yurtcluster-operator
+resources:
+- group: operator
+  kind: YurtCluster
+  version: v1alpha1
+version: "2"

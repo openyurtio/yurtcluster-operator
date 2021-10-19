@@ -1,0 +1,23 @@
+apiVersion: operator.openyurt.io/v1alpha1
+kind: YurtCluster
+metadata:
+  name: cluster
+spec:
+  imageRepository: "registry.cn-hangzhou.aliyuncs.com/ecp_builder"
+  yurtVersion: "v0.5.0"
+  cloudNodes:
+    selector:
+      nodeSelectorTerms:
+        - matchExpressions:
+            - key: openyurt.io/node-type
+              operator: In
+              values:
+                - "cloud"
+  edgeNodes:
+    selector:
+      nodeSelectorTerms:
+        - matchExpressions:
+            - key: openyurt.io/node-type
+              operator: In
+              values:
+                - "edge"
