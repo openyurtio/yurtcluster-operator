@@ -10,6 +10,7 @@ on:
 
 env:
   GO_VERSION: '1.16'
+  KIND_VERSION: 'v0.10.0'
 
 jobs:
   check-license:
@@ -57,6 +58,16 @@ jobs:
         uses: actions/setup-go@v2
         with:
           go-version: ${{ env.GO_VERSION }}
+      - name: Setup Kind Cluster
+        uses: engineerd/setup-kind@v0.5.0
+        with:
+          version: ${{ env.KIND_VERSION }}
+      - name: Install KubeBuilder
+        uses: RyanSiu1995/kubebuilder-action@v1.2
+        with:
+          version: 3.1.0
+          kubebuilderOnly: false
+          kubernetesVersion: v1.21.2
       - name: Cache Go Dependencies
         uses: actions/cache@v2
         with:
