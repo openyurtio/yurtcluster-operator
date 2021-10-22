@@ -34,7 +34,9 @@ const (
 	ServerConfigMap          = "yurt-tunnel-server-cfg"
 	ServerDaemonSet          = "yurt-tunnel-server-daemonset"
 	ServerDeployment         = "yurt-tunnel-server-deployment"
+	ServerContainerName      = "yurt-tunnel-server"
 	AgentDaemonSet           = "yurt-tunnel-agent-daemonset"
+	AgentContainerName       = "yurt-tunnel-agent"
 )
 
 var (

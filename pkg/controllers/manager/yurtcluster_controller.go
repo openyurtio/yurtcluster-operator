@@ -246,8 +246,6 @@ func (r *YurtClusterReconciler) reconcileYurtTunnelServer(ctx context.Context, t
 		yurttunnel.ServerService,
 		yurttunnel.ServerInternalService,
 		yurttunnel.ServerConfigMap,
-		yurttunnel.ServerDaemonSet,
-		yurttunnel.ServerDeployment,
 	}
 
 	var delList []string
@@ -286,6 +284,18 @@ func (r *YurtClusterReconciler) reconcileYurtTunnelServer(ctx context.Context, t
 		}
 	}
 
+	// deal with extra args for DaemonSet and Deployment
+	extraArgsComponents := []string{
+		yurttunnel.ServerDaemonSet,
+		yurttunnel.ServerDeployment,
+	}
+
+	for _, key := range extraArgsComponents {
+		if err := templates.ApplyTemplateWithExtraArgs(ctx, tpl, key, yurttunnel.ServerContainerName, values, yurtCluster.Spec.YurtTunnel.Server.ExtraArgs); err != nil {
+			return err
+		}
+	}
+
 	return nil
 }
 
@@ -305,7 +315,7 @@ func (r *YurtClusterReconciler) reconcileYurtTunnelAgent(ctx context.Context, tp
 
 	// normal reconcile
 	for _, key := range keys {
-		if err := util.ApplyTemplateWithRender(ctx, tpl, key, values); err != nil {
+		if err := templates.ApplyTemplateWithExtraArgs(ctx, tpl, key, yurttunnel.AgentContainerName, values, yurtCluster.Spec.YurtTunnel.Agent.ExtraArgs); err != nil {
 			return err
 		}
 	}

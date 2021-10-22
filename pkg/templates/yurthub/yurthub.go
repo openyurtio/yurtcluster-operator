@@ -28,6 +28,7 @@ const (
 	StaticCloudPod    = "yurt-hub-static-cloud-pod"
 	StaticEdgePod     = "yurt-hub-static-edge-pod"
 	YurtKubeletConfig = "yurt-kubelet-config"
+	ContainerName     = "yurt-hub"
 )
 
 var (

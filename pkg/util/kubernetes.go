@@ -24,10 +24,12 @@ import (
 	"text/template"
 
 	"github.com/pkg/errors"
+	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/meta"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
+	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/runtime/serializer"
 	"k8s.io/apimachinery/pkg/runtime/serializer/yaml"
 	"k8s.io/apimachinery/pkg/types"
@@ -234,6 +236,19 @@ func YamlToObject(yamlContent []byte) (client.Object, error) {
 		return nil, errors.Errorf("cannot convert runtime.Object %v into client.Object", obj)
 	}
 	return o, nil
+}
+
+// ObjectToYaml serializes the object to yaml format
+func ObjectToYaml(obj runtime.Object) (string, error) {
+	codec := serializer.NewCodecFactory(scheme.Scheme).LegacyCodec(
+		corev1.SchemeGroupVersion,
+		appsv1.SchemeGroupVersion,
+	)
+	output, err := runtime.Encode(codec, obj)
+	if err != nil {
+		return "", err
+	}
+	return string(output), nil
 }
 
 // RenderTemplate fills out the manifest template with the context.
