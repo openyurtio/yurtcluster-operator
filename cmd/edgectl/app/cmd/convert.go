@@ -210,9 +210,11 @@ func setupYurtHub(yurtCluster *operatorv1alpha1.YurtCluster,
 	healthCheckTimeout time.Duration) (reterr error) {
 	tplKey := yurthub.StaticCloudPod
 	yurtHubImage := util.GetYurtComponentImageByType(yurtCluster, util.YurtHubImageForCloudNode)
+	extraArgs := yurtCluster.Spec.YurtHub.Cloud.ExtraArgs
 	if nodeType == string(operatorv1alpha1.EdgeNode) {
 		tplKey = yurthub.StaticEdgePod
 		yurtHubImage = util.GetYurtComponentImageByType(yurtCluster, util.YurtHubImageForEdgeNode)
+		extraArgs = yurtCluster.Spec.YurtHub.Edge.ExtraArgs
 	}
 
 	values := map[string]string{
@@ -229,6 +231,12 @@ func setupYurtHub(yurtCluster *operatorv1alpha1.YurtCluster,
 	yurtHubFileContent, err := util.RenderTemplate(yurtHubPodTemplate, values)
 	if err != nil {
 		return errors.Wrap(err, "failed to render yurt-hub manifests")
+	}
+
+	// merge extra args
+	yurtHubFileContent, err = templates.MergeExtraArgs(yurtHubFileContent, extraArgs, yurthub.ContainerName)
+	if err != nil {
+		return errors.Errorf("failed to merge extra args for yurthub Pod, %v", err)
 	}
 
 	// diff with local yurt-hub yaml

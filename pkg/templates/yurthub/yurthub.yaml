@@ -40,6 +40,7 @@ data:
           mountPath: /var/lib/kubelet/pki
         command:
         - yurthub
+        args:
         - --v=2
         - --server-addr={{ .apiServerAddress }}
         - --node-name=$(NODE_NAME)
@@ -103,6 +104,7 @@ data:
           mountPath: /var/lib/kubelet/pki
         command:
         - yurthub
+        args:
         - --v=2
         - --server-addr={{ .apiServerAddress }}
         - --node-name=$(NODE_NAME)
