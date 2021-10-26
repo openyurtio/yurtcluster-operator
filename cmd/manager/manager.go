@@ -28,6 +28,7 @@ import (
 	"github.com/openyurtio/yurtcluster-operator/cmd/manager/options"
 	controllers "github.com/openyurtio/yurtcluster-operator/pkg/controllers/manager"
 	"github.com/openyurtio/yurtcluster-operator/pkg/kclient"
+	"github.com/openyurtio/yurtcluster-operator/pkg/version"
 )
 
 var (
@@ -42,6 +43,8 @@ func main() {
 	opt := options.NewDefaultOptions().ParseFlags()
 
 	ctrl.SetLogger(zap.New(zap.UseDevMode(false)))
+
+	setupLog.Info("starting manager", "version", version.Get())
 
 	restConfig, err := kclient.GetConfig()
 	if err != nil {
@@ -73,7 +76,6 @@ func main() {
 		os.Exit(1)
 	}
 
-	setupLog.Info("starting manager")
 	if err := mgr.Start(ctx); err != nil {
 		setupLog.Error(err, "problem running manager")
 		os.Exit(1)

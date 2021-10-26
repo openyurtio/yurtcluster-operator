@@ -27,6 +27,7 @@ import (
 	"github.com/openyurtio/yurtcluster-operator/cmd/agent/options"
 	controllers "github.com/openyurtio/yurtcluster-operator/pkg/controllers/agent"
 	"github.com/openyurtio/yurtcluster-operator/pkg/kclient"
+	"github.com/openyurtio/yurtcluster-operator/pkg/version"
 )
 
 var (
@@ -41,6 +42,8 @@ func main() {
 	opt := options.NewDefaultOptions().ParseFlags()
 
 	ctrl.SetLogger(zap.New(zap.UseDevMode(true)))
+
+	setupLog.Info("starting agent", "version", version.Get())
 
 	// init client
 	restConfig, err := kclient.GetConfigWithAPIServerAddress(opt.APIServerAddress)
@@ -72,7 +75,6 @@ func main() {
 		os.Exit(1)
 	}
 
-	setupLog.Info("starting agent")
 	if err := mgr.Start(ctx); err != nil {
 		setupLog.Error(err, "problem running agent")
 		os.Exit(1)
