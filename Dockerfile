@@ -7,6 +7,8 @@ ARG TARGETARCH
 ARG GO_PROXY
 ENV GOPROXY ${GO_PROXY:-"https://proxy.golang.org,direct"}
 
+ARG GO_LD_FLAGS
+
 WORKDIR /workspace
 # Copy the Go Modules manifests
 COPY go.mod go.mod
@@ -21,7 +23,7 @@ COPY cmd ./cmd
 COPY pkg ./pkg
 
 # Build
-RUN CGO_ENABLED=0 GOOS=${TARGETOS} GOARCH=${TARGETARCH} GO111MODULE=on go build -a -o manager cmd/manager/manager.go
+RUN CGO_ENABLED=0 GOOS=${TARGETOS} GOARCH=${TARGETARCH} GO111MODULE=on go build --ldflags "${GO_LD_FLAGS}" -a -o manager cmd/manager/manager.go
 
 FROM alpine:3.12.0
 WORKDIR /

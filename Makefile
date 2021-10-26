@@ -4,9 +4,13 @@ REPO ?= registry.cn-hangzhou.aliyuncs.com/ecp_builder
 MANAGER_IMG ?= ${REPO}/yurtcluster-operator-manager:${TAG}
 AGENT_IMG ?= ${REPO}/yurtcluster-operator-agent:${TAG}
 
-# Build linux/amd64 arch with `make release-artifacts BUILD_PLATFORMS=linux/amd64`
-BUILD_PLATFORMS ?= linux/amd64,linux/arm64,linux/arm/v7
-BUILD_GO_PROXY_ARG ?= GO_PROXY=https://goproxy.cn,direct
+# Go ldflags for version vars
+GO_LD_FLAGS ?= $(shell hack/lib/version.sh yurt::version::ldflags)
+
+# Build linux/amd64 arch with `make release-artifacts DOCKER_BUILD_PLATFORMS=linux/amd64`
+DOCKER_BUILD_PLATFORMS ?= linux/amd64,linux/arm64,linux/arm/v7
+DOCKER_BUILD_GO_PROXY_ARG ?= GO_PROXY=https://goproxy.cn,direct
+DOCKER_BUILD_GO_LD_FLAGS_ARG ?= GO_LD_FLAGS="${GO_LD_FLAGS}"
 
 # Produce CRDs that work back to Kubernetes 1.11 (no version conversion)
 CRD_OPTIONS ?= "crd:trivialVersions=true"
@@ -26,19 +30,19 @@ test: generate fmt vet manifests
 
 # Build manager binary
 manager: generate fmt vet
-	go build -o bin/manager cmd/manager/manager.go
+	go build --ldflags "${GO_LD_FLAGS}" -o bin/manager cmd/manager/manager.go
 
 # Build agent binary
 agent: generate fmt vet
-	go build -o bin/agent cmd/agent/agent.go
+	go build --ldflags "${GO_LD_FLAGS}" -o bin/agent cmd/agent/agent.go
 
 # Build edgectl binary
 edgectl: generate fmt vet
-	go build -o bin/edgectl cmd/edgectl/edgectl.go
+	go build --ldflags "${GO_LD_FLAGS}" -o bin/edgectl cmd/edgectl/edgectl.go
 
 # Run against the configured Kubernetes cluster in ~/.kube/config
 run: generate fmt vet manifests
-	go run ./cmd/manager/manager.go
+	go run --ldflags "${GO_LD_FLAGS}" ./cmd/manager/manager.go
 
 # Install CRDs into a cluster
 install: manifests
@@ -89,21 +93,21 @@ generate: controller-gen
 docker-build: docker-build-manager docker-build-agent
 
 docker-build-manager:
-	docker buildx build --load --platform ${BUILD_PLATFORMS} -f Dockerfile . -t ${MANAGER_IMG} \
-		--build-arg ${BUILD_GO_PROXY_ARG}
+	docker buildx build --load --platform ${DOCKER_BUILD_PLATFORMS} -f Dockerfile . -t ${MANAGER_IMG} \
+		--build-arg ${DOCKER_BUILD_GO_PROXY_ARG} --build-arg ${DOCKER_BUILD_GO_LD_FLAGS_ARG}
 docker-build-agent:
-	docker buildx build --load --platform ${BUILD_PLATFORMS} -f Dockerfile.agent . -t ${AGENT_IMG} \
-		--build-arg ${BUILD_GO_PROXY_ARG}
+	docker buildx build --load --platform ${DOCKER_BUILD_PLATFORMS} -f Dockerfile.agent . -t ${AGENT_IMG} \
+		--build-arg ${DOCKER_BUILD_GO_PROXY_ARG} --build-arg ${DOCKER_BUILD_GO_LD_FLAGS_ARG}
 
 # Push the docker images with multi-arch
 docker-push: docker-push-manager docker-push-agent
 
 docker-push-manager:
-	docker buildx build --push --platform ${BUILD_PLATFORMS} -f Dockerfile . -t ${MANAGER_IMG} \
-		--build-arg ${BUILD_GO_PROXY_ARG}
+	docker buildx build --push --platform ${DOCKER_BUILD_PLATFORMS} -f Dockerfile . -t ${MANAGER_IMG} \
+		--build-arg ${DOCKER_BUILD_GO_PROXY_ARG} --build-arg ${DOCKER_BUILD_GO_LD_FLAGS_ARG}
 docker-push-agent:
-	docker buildx build --push --platform ${BUILD_PLATFORMS} -f Dockerfile.agent . -t ${AGENT_IMG} \
-		--build-arg ${BUILD_GO_PROXY_ARG}
+	docker buildx build --push --platform ${DOCKER_BUILD_PLATFORMS} -f Dockerfile.agent . -t ${AGENT_IMG} \
+		--build-arg ${DOCKER_BUILD_GO_PROXY_ARG} --build-arg ${DOCKER_BUILD_GO_LD_FLAGS_ARG}
 
 # find or download controller-gen
 # download controller-gen if necessary

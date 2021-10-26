@@ -22,6 +22,7 @@ import (
 	"sort"
 	"strings"
 
+	"github.com/pkg/errors"
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/types"
@@ -29,7 +30,6 @@ import (
 
 	"github.com/openyurtio/yurtcluster-operator/pkg/kclient"
 	"github.com/openyurtio/yurtcluster-operator/pkg/util"
-	"github.com/pkg/errors"
 )
 
 // LoadTemplate returns the yurt template with given namespace/name

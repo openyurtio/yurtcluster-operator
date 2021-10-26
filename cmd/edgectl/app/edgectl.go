@@ -17,9 +17,12 @@ limitations under the License.
 package app
 
 import (
+	"fmt"
+
 	"github.com/spf13/cobra"
 
 	"github.com/openyurtio/yurtcluster-operator/cmd/edgectl/app/cmd"
+	"github.com/openyurtio/yurtcluster-operator/pkg/version"
 )
 
 // NewEdgectlCommand returns cobra.Command to run edgectl command
@@ -32,6 +35,8 @@ func NewEdgectlCommand() *cobra.Command {
 	}
 	cmds.AddCommand(cmd.NewCmdConvert())
 	cmds.AddCommand(cmd.NewCmdRevert())
+
+	cmds.Version = fmt.Sprintf("%#v", version.Get())
 
 	return cmds
 }
