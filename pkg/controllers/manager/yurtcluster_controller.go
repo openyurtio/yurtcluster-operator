@@ -31,6 +31,7 @@ import (
 	kerrors "k8s.io/apimachinery/pkg/util/errors"
 	"k8s.io/client-go/tools/record"
 	"k8s.io/klog/v2"
+	"k8s.io/utils/integer"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/controller"
@@ -266,8 +267,8 @@ func (r *YurtClusterReconciler) reconcileYurtTunnelServer(ctx context.Context, t
 		"publicPort":                         strconv.Itoa(yurtCluster.Spec.YurtTunnel.Server.PublicPort),
 		"edgeNodeLabel":                      projectinfo.GetEdgeWorkerLabelKey(),
 		"yurtTunnelServerImage":              util.GetYurtComponentImageByType(yurtCluster, util.YurtTunnelServerImage),
-		"yurtTunnelServerCount":              strconv.Itoa(max(controlPlaneSize, yurtCluster.Spec.YurtTunnel.Server.ServerCount)),
-		"yurtTunnelServerDeploymentReplicas": strconv.Itoa(max(yurtCluster.Spec.YurtTunnel.Server.ServerCount-controlPlaneSize, 0)),
+		"yurtTunnelServerCount":              strconv.Itoa(integer.IntMax(controlPlaneSize, yurtCluster.Spec.YurtTunnel.Server.ServerCount)),
+		"yurtTunnelServerDeploymentReplicas": strconv.Itoa(integer.IntMax(yurtCluster.Spec.YurtTunnel.Server.ServerCount-controlPlaneSize, 0)),
 	}
 
 	// remove objects if need
@@ -463,11 +464,4 @@ func (r *YurtClusterReconciler) SetupWithManager(ctx context.Context, mgr ctrl.M
 
 	r.recorder = mgr.GetEventRecorderFor("yurt-cluster-controller")
 	return nil
-}
-
-func max(a, b int) int {
-	if a > b {
-		return a
-	}
-	return b
 }
