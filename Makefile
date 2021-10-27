@@ -1,6 +1,6 @@
 # Image URL to use all building/pushing image targets
-TAG ?= v1.0.2
-REPO ?= registry.cn-hangzhou.aliyuncs.com/ecp_builder
+TAG ?= v0.1.0
+REPO ?= openyurt
 MANAGER_IMG ?= ${REPO}/yurtcluster-operator-manager:${TAG}
 AGENT_IMG ?= ${REPO}/yurtcluster-operator-agent:${TAG}
 
@@ -89,14 +89,14 @@ lint: golangci-lint
 generate: controller-gen
 	$(CONTROLLER_GEN) object:headerFile="hack/boilerplate.go.txt" paths="./..."
 
-# Build the docker image
+# Build the docker image (only linux/amd64 arch)
 docker-build: docker-build-manager docker-build-agent
 
 docker-build-manager:
-	docker buildx build --load --platform ${DOCKER_BUILD_PLATFORMS} -f Dockerfile . -t ${MANAGER_IMG} \
+	docker buildx build --load --platform linux/amd64 -f Dockerfile . -t ${MANAGER_IMG} \
 		--build-arg ${DOCKER_BUILD_GO_PROXY_ARG} --build-arg ${DOCKER_BUILD_GO_LD_FLAGS_ARG}
 docker-build-agent:
-	docker buildx build --load --platform ${DOCKER_BUILD_PLATFORMS} -f Dockerfile.agent . -t ${AGENT_IMG} \
+	docker buildx build --load --platform linux/amd64 -f Dockerfile.agent . -t ${AGENT_IMG} \
 		--build-arg ${DOCKER_BUILD_GO_PROXY_ARG} --build-arg ${DOCKER_BUILD_GO_LD_FLAGS_ARG}
 
 # Push the docker images with multi-arch

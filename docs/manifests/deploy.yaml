@@ -826,7 +826,7 @@ spec:
       containers:
       - command:
         - /manager
-        image: registry.cn-hangzhou.aliyuncs.com/ecp_builder/yurtcluster-operator-manager:v1.0.2
+        image: openyurt/yurtcluster-operator-manager:v0.1.0
         imagePullPolicy: IfNotPresent
         name: yurt-operator-manager
         resources:
@@ -867,7 +867,7 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: spec.nodeName
-        image: registry.cn-hangzhou.aliyuncs.com/ecp_builder/yurtcluster-operator-agent:v1.0.2
+        image: openyurt/yurtcluster-operator-agent:v0.1.0
         imagePullPolicy: IfNotPresent
         name: yurt-operator-agent
         resources:
@@ -892,7 +892,7 @@ spec:
         - -c
         - |
           cp /assets/* /tmp/
-        image: registry.cn-hangzhou.aliyuncs.com/ecp_builder/yurtcluster-operator-agent:v1.0.2
+        image: openyurt/yurtcluster-operator-agent:v0.1.0
         imagePullPolicy: IfNotPresent
         name: yurt-operator-prepare
         volumeMounts:

@@ -3,7 +3,7 @@ kind: YurtCluster
 metadata:
   name: cluster
 spec:
-  imageRepository: "registry.cn-hangzhou.aliyuncs.com/ecp_builder"
+  imageRepository: "openyurt"
   yurtVersion: "v0.5.0"
   cloudNodes:
     selector:
