@@ -4,7 +4,7 @@
 
 manager:
   replicas: 3
-  image: "openyurt/yurt-controller-manager:v0.5.0"
+  image: "openyurt/yurt-controller-manager:v0.6.0"
   imagePullPolicy: IfNotPresent
   nodeSelector:
     openyurt.io/is-edge-worker: "false"
