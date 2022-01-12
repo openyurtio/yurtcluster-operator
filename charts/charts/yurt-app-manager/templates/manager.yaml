@@ -72,86 +72,143 @@ spec:
 apiVersion: admissionregistration.k8s.io/v1beta1
 kind: MutatingWebhookConfiguration
 metadata:
-  creationTimestamp: null
+  annotations:
+    template: ""
   name: yurt-app-mutating-webhook-configuration
 webhooks:
-  - clientConfig:
-      caBundle: Cg==
-      service:
-        name: yurt-app-webhook-service
-        namespace: kube-system
-        path: /mutate-apps-openyurt-io-v1alpha1-nodepool
-    failurePolicy: Fail
-    name: mnodepool.kb.io
-    rules:
-      - apiGroups:
-          - apps.openyurt.io
-        apiVersions:
-          - v1alpha1
-        operations:
-          - CREATE
-          - UPDATE
-        resources:
-          - nodepools
-  - clientConfig:
-      caBundle: Cg==
-      service:
-        name: yurt-app-webhook-service
-        namespace: kube-system
-        path: /mutate-apps-openyurt-io-v1alpha1-uniteddeployment
-    failurePolicy: Fail
-    name: muniteddeployment.kb.io
-    rules:
-      - apiGroups:
-          - apps.openyurt.io
-        apiVersions:
-          - v1alpha1
-        operations:
-          - CREATE
-          - UPDATE
-        resources:
-          - uniteddeployments
+- clientConfig:
+    caBundle: Cg==
+    service:
+      name: yurt-app-webhook-service
+      namespace: kube-system
+      path: /mutate-apps-openyurt-io-v1alpha1-nodepool
+  failurePolicy: Fail
+  name: mnodepool.kb.io
+  rules:
+  - apiGroups:
+    - apps.openyurt.io
+    apiVersions:
+    - v1alpha1
+    operations:
+    - CREATE
+    - UPDATE
+    resources:
+    - nodepools
+- clientConfig:
+    caBundle: Cg==
+    service:
+      name: yurt-app-webhook-service
+      namespace: kube-system
+      path: /mutate-apps-openyurt-io-v1alpha1-uniteddeployment
+  failurePolicy: Fail
+  name: muniteddeployment.kb.io
+  rules:
+  - apiGroups:
+    - apps.openyurt.io
+    apiVersions:
+    - v1alpha1
+    operations:
+    - CREATE
+    - UPDATE
+    resources:
+    - uniteddeployments
+- clientConfig:
+    caBundle: Cg==
+    service:
+      name: yurt-app-webhook-service
+      namespace: kube-system
+      path: /mutate-apps-openyurt-io-v1alpha1-yurtappdaemon
+  failurePolicy: Fail
+  name: myurtappdaemon.kb.io
+  rules:
+  - apiGroups:
+    - apps.openyurt.io
+    apiVersions:
+    - v1alpha1
+    operations:
+    - CREATE
+    - UPDATE
+    resources:
+    - yurtappdaemons
 ---
 apiVersion: admissionregistration.k8s.io/v1beta1
 kind: ValidatingWebhookConfiguration
 metadata:
-  creationTimestamp: null
+  annotations:
+    template: ""
   name: yurt-app-validating-webhook-configuration
 webhooks:
-  - clientConfig:
-      caBundle: Cg==
-      service:
-        name: yurt-app-webhook-service
-        namespace: kube-system
-        path: /validate-apps-openyurt-io-v1alpha1-nodepool
-    failurePolicy: Fail
-    name: vnodepool.kb.io
-    rules:
-      - apiGroups:
-          - apps.openyurt.io
-        apiVersions:
-          - v1alpha1
-        operations:
-          - CREATE
-          - UPDATE
-          - DELETE
-        resources:
-          - nodepools
-  - clientConfig:
-      caBundle: Cg==
-      service:
-        name: yurt-app-webhook-service
-        namespace: kube-system
-        path: /validate-apps-openyurt-io-v1alpha1-uniteddeployment
-    failurePolicy: Fail
-    name: vuniteddeployment.kb.io
-    rules:
-      - apiGroups:
-          - apps.openyurt.io
-        apiVersions:
-          - v1alpha1
-        operations:
-          - CREATE
-          - UPDATE
-        resources:
-          - uniteddeployments
+- clientConfig:
+    caBundle: Cg==
+    service:
+      name: yurt-app-webhook-service
+      namespace: kube-system
+      path: /validate-apps-openyurt-io-v1alpha1-nodepool
+  failurePolicy: Fail
+  name: vnodepool.kb.io
+  rules:
+  - apiGroups:
+    - apps.openyurt.io
+    apiVersions:
+    - v1alpha1
+    operations:
+    - CREATE
+    - UPDATE
+    - DELETE
+    resources:
+    - nodepools
+- clientConfig:
+    caBundle: Cg==
+    service:
+      name: yurt-app-webhook-service
+      namespace: kube-system
+      path: /validate-apps-openyurt-io-v1alpha1-uniteddeployment
+  failurePolicy: Fail
+  name: vuniteddeployment.kb.io
+  rules:
+  - apiGroups:
+    - apps.openyurt.io
+    apiVersions:
+    - v1alpha1
+    operations:
+    - CREATE
+    - UPDATE
+    resources:
+    - uniteddeployments
+- clientConfig:
+    caBundle: Cg==
+    service:
+      name: yurt-app-webhook-service
+      namespace: kube-system
+      path: /validate-apps-openyurt-io-v1alpha1-yurtappdaemon
+  failurePolicy: Fail
+  name: vyurtappdaemon.kb.io
+  rules:
+  - apiGroups:
+    - apps.openyurt.io
+    apiVersions:
+    - v1alpha1
+    operations:
+    - CREATE
+    - UPDATE
+    resources:
+    - yurtappdaemons
+- clientConfig:
+    caBundle: Cg==
+    service:
+      name: yurt-app-webhook-service
+      namespace: kube-system
+      path: /validate-apps-openyurt-io-v1alpha1-yurtingress
+  failurePolicy: Fail
+  name: vyurtingress.kb.io
+  rules:
+  - apiGroups:
+    - apps.openyurt.io
+    apiVersions:
+    - v1alpha1
+    operations:
+    - CREATE
+    - UPDATE
+    - DELETE
+    resources:
+    - yurtingresses

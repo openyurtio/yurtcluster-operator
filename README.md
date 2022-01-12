@@ -50,4 +50,5 @@ EOF
 
 ```shell
 # kubectl delete yurtclusters cluster
+# helm uninstall operator -n kube-system
 ```

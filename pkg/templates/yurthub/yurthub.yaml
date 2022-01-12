@@ -16,10 +16,10 @@ data:
       namespace: kube-system
     spec:
       volumes:
-      - name: pki
+      - name: hub-dir
         hostPath:
-          path: /etc/kubernetes/pki
-          type: Directory
+          path: /var/lib/yurthub
+          type: DirectoryOrCreate
       - name: kubernetes
         hostPath:
           path: /etc/kubernetes
@@ -32,10 +32,10 @@ data:
       - name: yurt-hub
         image: {{ .image }}
         volumeMounts:
+        - name: hub-dir
+          mountPath: /var/lib/yurthub
         - name: kubernetes
           mountPath: /etc/kubernetes
-        - name: pki
-          mountPath: /etc/kubernetes/pki
         - name: pem-dir
           mountPath: /var/lib/kubelet/pki
         command:
@@ -80,10 +80,10 @@ data:
       namespace: kube-system
     spec:
       volumes:
-      - name: pki
+      - name: hub-dir
         hostPath:
-          path: /etc/kubernetes/pki
-          type: Directory
+          path: /var/lib/yurthub
+          type: DirectoryOrCreate
       - name: kubernetes
         hostPath:
           path: /etc/kubernetes
@@ -96,10 +96,10 @@ data:
       - name: yurt-hub
         image: {{ .image }}
         volumeMounts:
+        - name: hub-dir
+          mountPath: /var/lib/yurthub
         - name: kubernetes
           mountPath: /etc/kubernetes
-        - name: pki
-          mountPath: /etc/kubernetes/pki
         - name: pem-dir
           mountPath: /var/lib/kubelet/pki
         command:
@@ -134,6 +134,55 @@ data:
       hostNetwork: true
       priorityClassName: system-node-critical
       priority: 2000001000
+  yurt-hub-config: |
+    apiVersion: v1
+    kind: ConfigMap
+    metadata:
+      name: yurt-hub-cfg
+      namespace: kube-system
+    data:
+      cache_agents: ""
+  yurt-hub-cluster-role: |
+    apiVersion: rbac.authorization.k8s.io/v1
+    kind: ClusterRole
+    metadata:
+      name: yurt-hub
+    rules:
+      - apiGroups:
+          - ""
+        resources:
+          - events
+        verbs:
+          - get
+      - apiGroups:
+          - apps.openyurt.io
+        resources:
+          - nodepools
+        verbs:
+          - list
+          - watch
+      - apiGroups:
+          - ""
+        resources:
+          - configmaps
+        resourceNames:
+          - yurt-hub-cfg
+        verbs:
+          - list
+          - watch
+  yurt-hub-cluster-role-binding: |
+    apiVersion: rbac.authorization.k8s.io/v1
+    kind: ClusterRoleBinding
+    metadata:
+      name: yurt-hub
+    roleRef:
+      apiGroup: rbac.authorization.k8s.io
+      kind: ClusterRole
+      name: yurt-hub
+    subjects:
+      - apiGroup: rbac.authorization.k8s.io
+        kind: Group
+        name: system:nodes
   yurt-kubelet-config: |
     apiVersion: v1
     clusters:

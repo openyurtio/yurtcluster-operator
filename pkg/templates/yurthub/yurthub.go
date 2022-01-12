@@ -25,10 +25,13 @@ import (
 
 const (
 	// data keys
-	StaticCloudPod    = "yurt-hub-static-cloud-pod"
-	StaticEdgePod     = "yurt-hub-static-edge-pod"
-	YurtKubeletConfig = "yurt-kubelet-config"
-	ContainerName     = "yurt-hub"
+	StaticCloudPod        = "yurt-hub-static-cloud-pod"
+	StaticEdgePod         = "yurt-hub-static-edge-pod"
+	HubConfig             = "yurt-hub-config"
+	HubClusterRole        = "yurt-hub-cluster-role"
+	HubClusterRoleBinding = "yurt-hub-cluster-role-binding"
+	YurtKubeletConfig     = "yurt-kubelet-config"
+	ContainerName         = "yurt-hub"
 )
 
 var (

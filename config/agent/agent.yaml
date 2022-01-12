@@ -29,7 +29,7 @@ spec:
             - -c
             - |
               cp /assets/* /tmp/
-          image: yurtcluster-operator-agent:v0.1.0
+          image: yurtcluster-operator-agent:v0.6.0
           imagePullPolicy: IfNotPresent
           name: yurt-operator-prepare
           volumeMounts:
@@ -40,7 +40,7 @@ spec:
             - /agent
           args:
             - --node-name=$(NODE_NAME)
-          image: yurtcluster-operator-agent:v0.1.0
+          image: yurtcluster-operator-agent:v0.6.0
           imagePullPolicy: IfNotPresent
           name: yurt-operator-agent
           env:

@@ -24,7 +24,6 @@ import (
 	"github.com/go-logr/logr"
 	"github.com/pkg/errors"
 	corev1 "k8s.io/api/core/v1"
-	rbacv1 "k8s.io/api/rbac/v1"
 	apierrors "k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/types"
@@ -41,7 +40,6 @@ import (
 
 	operatorv1alpha1 "github.com/openyurtio/yurtcluster-operator/api/v1alpha1"
 	controllersutil "github.com/openyurtio/yurtcluster-operator/pkg/controllers/util"
-	"github.com/openyurtio/yurtcluster-operator/pkg/kclient"
 	"github.com/openyurtio/yurtcluster-operator/pkg/patcher"
 	"github.com/openyurtio/yurtcluster-operator/pkg/projectinfo"
 	"github.com/openyurtio/yurtcluster-operator/pkg/templates"
@@ -120,10 +118,17 @@ func (r *YurtClusterReconciler) Reconcile(ctx context.Context, req ctrl.Request)
 }
 
 func (r *YurtClusterReconciler) reconcileDelete(ctx context.Context, yurtCluster *operatorv1alpha1.YurtCluster) (ctrl.Result, error) {
-	if err := r.reconcileYurtTunnelDelete(ctx, yurtCluster); err != nil {
-		return ctrl.Result{}, err
+	var errs []error
+
+	if err := r.reconcileYurtHubDelete(ctx); err != nil {
+		errs = append(errs, err)
 	}
-	return ctrl.Result{}, nil
+
+	if err := r.reconcileYurtTunnelDelete(ctx, yurtCluster); err != nil {
+		errs = append(errs, err)
+	}
+
+	return ctrl.Result{}, kerrors.NewAggregate(errs)
 }
 
 func (r *YurtClusterReconciler) reconcile(ctx context.Context, yurtCluster *operatorv1alpha1.YurtCluster) (ctrl.Result, error) {
@@ -151,64 +156,52 @@ func (r *YurtClusterReconciler) reconcileYurtHub(ctx context.Context) error {
 	if err := r.reconcileYurtHubTemplate(ctx); err != nil {
 		return err
 	}
-	return r.reconcileYurtHubRBAC(ctx)
+
+	tpl, err := templates.LoadTemplate(ctx, yurthub.NamespacedName)
+	if err != nil {
+		return errors.Wrap(err, "failed to load yurt hub template")
+	}
+
+	keys := []string{
+		yurthub.HubConfig,
+		yurthub.HubClusterRole,
+		yurthub.HubClusterRoleBinding,
+	}
+
+	values := map[string]string{}
+
+	// add or update objects
+	for _, key := range keys {
+		if err := util.ApplyTemplateWithRender(ctx, tpl, key, values); err != nil {
+			return err
+		}
+	}
+
+	return nil
 }
 
 func (r *YurtClusterReconciler) reconcileYurtHubTemplate(ctx context.Context) error {
 	return util.Apply(ctx, yurthub.TemplateContent)
 }
 
-func (r *YurtClusterReconciler) reconcileYurtHubRBAC(ctx context.Context) error {
-	// ensure system:node cluster role
-	nodeClusterRole := &rbacv1.ClusterRole{}
-	namespacedName := types.NamespacedName{Name: "system:node"}
-	if err := kclient.CtlClient().Get(ctx, namespacedName, nodeClusterRole); err != nil {
-		return errors.Wrap(err, "failed to update system:node ClusterRole for YurtHub")
-	}
-	found := false
-	for _, rule := range nodeClusterRole.Rules {
-		for _, apiGroup := range rule.APIGroups {
-			if apiGroup == "apps.openyurt.io" {
-				found = true
-				break
-			}
-		}
-	}
-	if !found {
-		yurtHubPolicyRules := []rbacv1.PolicyRule{
-			{
-				APIGroups: []string{"apps.openyurt.io"},
-				Resources: []string{"nodepools"},
-				Verbs:     []string{"create", "delete", "get", "list", "patch", "update", "watch"},
-			},
-		}
-		nodeClusterRole.Rules = append(nodeClusterRole.Rules, yurtHubPolicyRules...)
-		if err := kclient.CtlClient().Update(ctx, nodeClusterRole); err != nil {
-			return errors.Wrap(err, "failed to update system:node ClusterRole for YurtHub")
-		}
+func (r *YurtClusterReconciler) reconcileYurtHubDelete(ctx context.Context) error {
+	tpl, err := templates.LoadTemplate(ctx, yurthub.NamespacedName)
+	if err != nil {
+		return errors.Wrap(err, "failed to load yurt hub template")
 	}
 
-	// ensure system:node cluster role binding
-	nodeClusterRoleBinding := &rbacv1.ClusterRoleBinding{}
-	if err := kclient.CtlClient().Get(ctx, namespacedName, nodeClusterRoleBinding); err != nil {
-		return errors.Wrap(err, "failed to update system:node ClusterRoleBinding for YurtHub")
+	keys := []string{
+		yurthub.HubConfig,
+		yurthub.HubClusterRole,
+		yurthub.HubClusterRoleBinding,
 	}
-	found = false
-	for _, sub := range nodeClusterRoleBinding.Subjects {
-		if sub.Kind == "Group" && sub.Name == "system:nodes" {
-			found = true
-			break
-		}
-	}
-	if !found {
-		nodesSub := rbacv1.Subject{
-			APIGroup: "rbac.authorization.k8s.io",
-			Kind:     "Group",
-			Name:     "system:nodes",
-		}
-		nodeClusterRoleBinding.Subjects = append(nodeClusterRoleBinding.Subjects, nodesSub)
-		if err := kclient.CtlClient().Update(ctx, nodeClusterRoleBinding); err != nil {
-			return errors.Wrap(err, "failed to update system:node ClusterRoleBinding for YurtHub")
+
+	values := map[string]string{}
+
+	// add or update objects
+	for _, key := range keys {
+		if err := util.DeleteTemplateWithRender(ctx, tpl, key, values); err != nil {
+			return err
 		}
 	}
 
