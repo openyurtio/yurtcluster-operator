@@ -4,11 +4,11 @@
 
 manager:
   replicas: 1
-  image: "openyurt/yurtcluster-operator-manager:v0.6.0"
+  image: "openyurt/yurtcluster-operator-manager:v0.6.1"
   imagePullPolicy: Always
 
 agent:
-  image: "openyurt/yurtcluster-operator-agent:v0.6.0"
+  image: "openyurt/yurtcluster-operator-agent:v0.6.1"
   imagePullPolicy: Always
   transHealthCheckTimeout : 5m
 
