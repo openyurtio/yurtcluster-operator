@@ -140,6 +140,8 @@ data:
     metadata:
       name: yurt-hub-cfg
       namespace: kube-system
+      annotations:
+        operator.openyurt.io/skip-reconcile: "true"
     data:
       cache_agents: ""
   yurt-hub-cluster-role: |
