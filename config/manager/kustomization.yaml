@@ -5,4 +5,4 @@ kind: Kustomization
 images:
 - name: yurtcluster-operator-manager
   newName: openyurt/yurtcluster-operator-manager
-  newTag: v0.6.0
+  newTag: v0.7.0-alpha
