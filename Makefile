@@ -1,5 +1,5 @@
 # Image URL to use all building/pushing image targets
-TAG ?= v0.6.0
+TAG ?= v0.6.1
 REPO ?= openyurt
 MANAGER_IMG ?= ${REPO}/yurtcluster-operator-manager:${TAG}
 AGENT_IMG ?= ${REPO}/yurtcluster-operator-agent:${TAG}

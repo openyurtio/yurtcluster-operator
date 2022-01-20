@@ -5,4 +5,4 @@ kind: Kustomization
 images:
 - name: yurtcluster-operator-agent
   newName: openyurt/yurtcluster-operator-agent
-  newTag: v0.6.0
+  newTag: v0.6.1
