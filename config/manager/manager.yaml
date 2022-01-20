@@ -28,7 +28,7 @@ spec:
       containers:
       - command:
         - /manager
-        image: yurtcluster-operator-manager:v0.6.0
+        image: yurtcluster-operator-manager:v0.7.0-alpha
         imagePullPolicy: IfNotPresent
         name: yurt-operator-manager
         resources:
