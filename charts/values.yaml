@@ -14,7 +14,7 @@ agent:
 
 
 ## sub-charts configuration
-# values for yurt-controller-manager subchart
+# the values for yurt-controller-manager subchart
 yurt-controller-manager:
   manager:
     replicas: 3
@@ -29,7 +29,7 @@ yurt-controller-manager:
         operator: Exists
         effect: NoSchedule
 
-# values for yurt-app-manager subchart
+# the values for yurt-app-manager subchart
 yurt-app-manager:
   manager:
     replicas: 3
