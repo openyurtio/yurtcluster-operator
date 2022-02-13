@@ -5,19 +5,19 @@ https://github.com/openyurtio/openyurt/blob/master/CONTRIBUTING.md
 #### What type of PR is this?
 <!--
 Add one of the following kinds:
-/kind bug
-/kind documentation
-/kind enhancement
-/kind good-first-issue
-/kind feature
-/kind question
-/kind design
+> /kind bug
+> /kind documentation
+> /kind enhancement
+> /kind good-first-issue
+> /kind feature
+> /kind question
+> /kind design
 
 Optionally add one or more of the following kinds if applicable:
-/sig ai
-/sig iot
-/sig network
-/sig storage
+> /sig ai
+> /sig iot
+> /sig network
+> /sig storage
 -->
 
 #### What this PR does / why we need it:
@@ -32,7 +32,7 @@ Fixes #
 #### Special notes for your reviewer:
 <!--
 use this label to assign your reviewer
-/assign @your_reviewer
+> /assign @your_reviewer
 -->
 
 #### Does this PR introduce a user-facing change?
