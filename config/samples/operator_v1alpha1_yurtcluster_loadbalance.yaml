@@ -1,0 +1,38 @@
+apiVersion: operator.openyurt.io/v1alpha1
+kind: YurtCluster
+metadata:
+  name: cluster
+spec:
+  yurtVersion: "v0.6.0"
+  yurtTunnel:
+    server:
+      enabled: true
+      extraArgs:
+        cert-ips: __kubernetes_master_slb_address__
+    agent:
+      enabled: true
+      extraArgs:
+        tunnelserver-addr: __tunnelserver_slb_address__:port
+  yurtHub:
+    cloud:
+      enabled: false
+    edge:
+      enabled: true
+      extraArgs:
+        server-addr: https://__kubernetes_master_slb_address__:port
+  cloudNodes:
+    selector:
+      nodeSelectorTerms:
+        - matchExpressions:
+            - key: openyurt.io/node-type
+              operator: In
+              values:
+                - "cloud"
+  edgeNodes:
+    selector:
+      nodeSelectorTerms:
+        - matchExpressions:
+            - key: openyurt.io/node-type
+              operator: In
+              values:
+                - "edge"
