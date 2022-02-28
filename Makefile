@@ -71,7 +71,7 @@ release-manifests: manifests
 manifests: controller-gen
 	$(CONTROLLER_GEN) $(CRD_OPTIONS) rbac:roleName=manager-role webhook paths="./..." \
 		output:crd:artifacts:config=config/crd/bases
-	cp config/crd/bases/* charts/crds/
+	cp config/crd/bases/* charts/yurtcluster-operator/crds
 
 # Run go fmt against code
 fmt:
@@ -141,3 +141,9 @@ GOLANGCI_LINT=$(GOBIN)/golangci-lint
 else
 GOLANGCI_LINT=$(shell which golangci-lint)
 endif
+
+update-helm-package: # update helm repo
+	chmod a+x ./hack/update-helm-package.sh && ./hack/update-helm-package.sh
+
+verify-helm-package: # verify helm repo
+	chmod a+x ./hack/verify-helm-package.sh && ./hack/verify-helm-package.sh
