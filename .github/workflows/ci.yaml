@@ -20,6 +20,13 @@ jobs:
         uses: actions/checkout@v2
       - name: Run Check License
         run: hack/make-rules/check_license.sh
+  verify-helm-repo:
+    runs-on: ubuntu-18.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Run Verify Helm Package
+        run: make verify-helm-package
   golangci-lint:
     runs-on: ubuntu-18.04
     steps:
