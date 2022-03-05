@@ -4,5 +4,5 @@ type: application
 maintainers:
   - name: SataQiu
     email: shidaqiu2018@gmail.com
-version: 0.1.0
-appVersion: 0.1.0
+version: v0.7.0-alpha
+appVersion: v0.7.0-alpha

@@ -3,7 +3,7 @@ kind: YurtCluster
 metadata:
   name: cluster
 spec:
-  yurtVersion: "v0.6.0"
+  yurtVersion: "v0.6.1"
   cloudNodes:
     selector:
       nodeSelectorTerms:
