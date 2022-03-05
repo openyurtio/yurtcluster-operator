@@ -45,27 +45,27 @@ run: generate fmt vet manifests
 	go run --ldflags "${GO_LD_FLAGS}" ./cmd/manager/manager.go
 
 # Install CRDs into a cluster
-install: manifests
-	kustomize build config/crd | kubectl apply -f -
+install: manifests kustomize
+	$(KUSTOMIZE) build config/crd | kubectl apply -f -
 
 # Uninstall CRDs from a cluster
-uninstall: manifests
-	kustomize build config/crd | kubectl delete -f -
+uninstall: manifests kustomize
+	$(KUSTOMIZE) build config/crd | kubectl delete -f -
 
 # Deploy controller in the configured Kubernetes cluster in ~/.kube/config
-deploy: manifests
-	cd config/manager && kustomize edit set image yurtcluster-operator-manager=${MANAGER_IMG}
-	cd config/agent && kustomize edit set image yurtcluster-operator-agent=${AGENT_IMG}
-	kustomize build config/default | kubectl apply -f -
+deploy: manifests kustomize
+	cd config/manager && $(KUSTOMIZE) edit set image yurtcluster-operator-manager=${MANAGER_IMG}
+	cd config/agent && $(KUSTOMIZE) edit set image yurtcluster-operator-agent=${AGENT_IMG}
+	$(KUSTOMIZE) build config/default | kubectl apply -f -
 
 # Release manifests into docs/manifests and push docker image to dockerhub
 release-artifacts: docker-push release-manifests
 
 # Release manifests into docs/manifests
-release-manifests: manifests
-	cd config/manager && kustomize edit set image yurtcluster-operator-manager=${MANAGER_IMG}
-	cd config/agent && kustomize edit set image yurtcluster-operator-agent=${AGENT_IMG}
-	kustomize build config/default > docs/manifests/deploy.yaml
+release-manifests: manifests kustomize
+	cd config/manager && $(KUSTOMIZE) edit set image yurtcluster-operator-manager=${MANAGER_IMG}
+	cd config/agent && $(KUSTOMIZE) edit set image yurtcluster-operator-agent=${AGENT_IMG}
+	$(KUSTOMIZE) build config/default > docs/manifests/deploy.yaml
 
 # Generate manifests e.g. CRD, RBAC etc.
 manifests: controller-gen
@@ -118,7 +118,7 @@ ifeq (, $(shell which controller-gen))
 	CONTROLLER_GEN_TMP_DIR=$$(mktemp -d) ;\
 	cd $$CONTROLLER_GEN_TMP_DIR ;\
 	go mod init tmp ;\
-	go get sigs.k8s.io/controller-tools/cmd/controller-gen@v0.2.5 ;\
+	go get sigs.k8s.io/controller-tools/cmd/controller-gen@v0.5.0 ;\
 	rm -rf $$CONTROLLER_GEN_TMP_DIR ;\
 	}
 CONTROLLER_GEN=$(GOBIN)/controller-gen
@@ -140,4 +140,20 @@ ifeq (, $(shell which golangci-lint))
 GOLANGCI_LINT=$(GOBIN)/golangci-lint
 else
 GOLANGCI_LINT=$(shell which golangci-lint)
+endif
+
+# find or download kustomize
+kustomize:
+ifeq (, $(shell which kustomize))
+	@{ \
+	set -e ;\
+	KUSTOMIZE_TMP_DIR=$$(mktemp -d) ;\
+	cd $$KUSTOMIZE_TMP_DIR ;\
+	go mod init tmp ;\
+	go get sigs.k8s.io/kustomize/kustomize/v4@v4.5.2 ;\
+	rm -rf $$KUSTOMIZE_TMP_DIR ;\
+	}
+KUSTOMIZE=$(GOBIN)/kustomize
+else
+KUSTOMIZE=$(shell which kustomize)
 endif
