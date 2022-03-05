@@ -829,7 +829,7 @@ spec:
       containers:
       - command:
         - /manager
-        image: openyurt/yurtcluster-operator-manager:v0.6.1
+        image: openyurt/yurtcluster-operator-manager:v0.6.2
         imagePullPolicy: IfNotPresent
         name: yurt-operator-manager
         resources:
@@ -870,7 +870,7 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: spec.nodeName
-        image: openyurt/yurtcluster-operator-agent:v0.6.1
+        image: openyurt/yurtcluster-operator-agent:v0.6.2
         imagePullPolicy: IfNotPresent
         name: yurt-operator-agent
         resources:
@@ -895,7 +895,7 @@ spec:
         - -c
         - |
           cp /assets/* /tmp/
-        image: openyurt/yurtcluster-operator-agent:v0.6.1
+        image: openyurt/yurtcluster-operator-agent:v0.6.2
         imagePullPolicy: IfNotPresent
         name: yurt-operator-prepare
         volumeMounts:
