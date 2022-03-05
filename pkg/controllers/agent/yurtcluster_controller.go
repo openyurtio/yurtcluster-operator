@@ -163,9 +163,6 @@ func (r *YurtClusterReconciler) reconcileEdgeNode(ctx context.Context, yurtClust
 		return ctrl.Result{}, errors.Errorf("can not convert node %q because it is in NotReady status", node.Name)
 	}
 
-	// add edge taint
-	util.EnsureEdgeTaintForNode(node)
-
 	// add edge label for node
 	node.Labels[projectinfo.GetEdgeWorkerLabelKey()] = "true"
 
@@ -176,9 +173,6 @@ func (r *YurtClusterReconciler) reconcileNormalNode(ctx context.Context, yurtClu
 	if controllersutil.IsNodeConvertOrRevertCompleted(node, yurtCluster) {
 		return ctrl.Result{}, nil
 	}
-
-	// remove edge taint if exists
-	util.RemoveEdgeTaintForNode(node)
 
 	// remove edge label from node labels
 	delete(node.Labels, projectinfo.GetEdgeWorkerLabelKey())
