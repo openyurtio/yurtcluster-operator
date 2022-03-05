@@ -22,7 +22,7 @@ import (
 
 const (
 	// DefaultYurtVersion defines the default yurt version (image tag)
-	DefaultYurtVersion = "v0.6.0"
+	DefaultYurtVersion = "v0.6.1"
 
 	// DefaultYurtImageRepository defines the default repository for the yurt component images
 	DefaultYurtImageRepository = "docker.io/openyurt"

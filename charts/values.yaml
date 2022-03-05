@@ -18,7 +18,7 @@ agent:
 yurt-controller-manager:
   manager:
     replicas: 3
-    image: "openyurt/yurt-controller-manager:v0.6.0"
+    image: "openyurt/yurt-controller-manager:v0.6.1"
     imagePullPolicy: IfNotPresent
     nodeSelector:
       openyurt.io/is-edge-worker: "false"
