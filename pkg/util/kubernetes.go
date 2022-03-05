@@ -48,12 +48,6 @@ const (
 	// SkipReconcileAnnotation defines the annotation which marks the object should not be reconciled
 	SkipReconcileAnnotation = "operator.openyurt.io/skip-reconcile"
 
-	// EdgeNodeTaintKey defines the taint key for edge node
-	EdgeNodeTaintKey = "node-role.openyurt.io/edge"
-
-	// EdgeNodeTaintEffect defines the taint effect for edge node
-	EdgeNodeTaintEffect = "NoSchedule"
-
 	// ControlPlaneLabel defines the label for control-plane node
 	ControlPlaneLabel = "node-role.kubernetes.io/master"
 )
@@ -349,35 +343,4 @@ func GetYurtComponentImageByType(yurtCluster *operatorv1alpha1.YurtCluster, imag
 		name = "unknown"
 	}
 	return fmt.Sprintf("%s/%s:%s", repository, name, tag)
-}
-
-// EnsureEdgeTaintForNode adds edge taint for node
-func EnsureEdgeTaintForNode(node *corev1.Node) {
-	found := false
-	for _, taint := range node.Spec.Taints {
-		if taint.Key == EdgeNodeTaintKey && taint.Effect == EdgeNodeTaintEffect {
-			found = true
-			break
-		}
-	}
-
-	if !found {
-		taint := corev1.Taint{
-			Key:    EdgeNodeTaintKey,
-			Effect: EdgeNodeTaintEffect,
-		}
-		node.Spec.Taints = append(node.Spec.Taints, taint)
-	}
-}
-
-// RemoveEdgeTaintForNode removes edge taint for node
-func RemoveEdgeTaintForNode(node *corev1.Node) {
-	var newTaints []corev1.Taint
-	for _, taint := range node.Spec.Taints {
-		if taint.Key == EdgeNodeTaintKey && taint.Effect == EdgeNodeTaintEffect {
-			continue
-		}
-		newTaints = append(newTaints, taint)
-	}
-	node.Spec.Taints = newTaints
 }
