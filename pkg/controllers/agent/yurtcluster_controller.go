@@ -100,6 +100,12 @@ func (r *YurtClusterReconciler) Reconcile(ctx context.Context, req ctrl.Request)
 		if err := patchHelper.Patch(ctx, node, patchOpts...); err != nil {
 			reterr = kerrors.NewAggregate([]error{reterr, err})
 		}
+
+		if reterr != nil {
+			klog.V(4).InfoS("node convert fail", "cluster", yurtCluster.Name, "node", node.Name, "err", reterr)
+		} else {
+			klog.V(4).InfoS("node convert success", "cluster", yurtCluster.Name, "node", node.Name)
+		}
 	}()
 
 	// handle deletion reconciliation loop
@@ -128,8 +134,9 @@ func (r *YurtClusterReconciler) reconcile(ctx context.Context, yurtCluster *oper
 			return ctrl.Result{}, err
 		}
 	}
-
-	switch controllersutil.GetNodeType(node, yurtCluster) {
+	nodeType := controllersutil.GetNodeType(node, yurtCluster)
+	klog.V(4).InfoS("prepare convert node", "cluster", yurtCluster.Name, "node", node.Name, "type", nodeType)
+	switch nodeType {
 	case operatorv1alpha1.CloudNode:
 		return r.reconcileCloudNode(ctx, yurtCluster, node)
 	case operatorv1alpha1.EdgeNode:
@@ -156,6 +163,7 @@ func (r *YurtClusterReconciler) reconcileCloudNode(ctx context.Context, yurtClus
 
 func (r *YurtClusterReconciler) reconcileEdgeNode(ctx context.Context, yurtCluster *operatorv1alpha1.YurtCluster, node *corev1.Node) (ctrl.Result, error) {
 	if controllersutil.IsNodeConvertOrRevertCompleted(node, yurtCluster) {
+		klog.V(4).InfoS("node convert complete", "cluster", yurtCluster.Name, "node", node.Name)
 		return ctrl.Result{}, nil
 	}
 
@@ -199,7 +207,7 @@ func (r *YurtClusterReconciler) runNodeConvert(ctx context.Context, nodeType ope
 		return ctrl.Result{}, err
 	}
 
-	klog.Infof("run convert with result: \n%v", string(result))
+	klog.InfoS("node convert finish.", "cluster", yurtCluster.Name, "node", r.Options.NodeName, "result", string(result))
 
 	return ctrl.Result{}, nil
 }
