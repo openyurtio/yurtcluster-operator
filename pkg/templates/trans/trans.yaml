@@ -14,7 +14,7 @@ data:
       mkdir -p /var/run/secrets/kubernetes.io
     fi
     cp -a /var/tmp/serviceaccount /var/run/secrets/kubernetes.io/
-    /var/tmp/edgectl convert --pod-manifests-path %v --node-name %v --node-type %v --trans-health-check-timeout %v
+    /var/tmp/edgectl convert --pod-manifests-path %v --node-name %v --node-type %v --trans-health-check-timeout %v --v=2
     rm -rf /var/run/secrets/kubernetes.io/serviceaccount
     exit
     EOF
@@ -27,7 +27,7 @@ data:
       mkdir -p /var/run/secrets/kubernetes.io
     fi
     cp -a /var/tmp/serviceaccount /var/run/secrets/kubernetes.io/
-    /var/tmp/edgectl revert --pod-manifests-path %v --node-name %v --trans-health-check-timeout %v --force
+    /var/tmp/edgectl revert --pod-manifests-path %v --node-name %v --trans-health-check-timeout %v --force --v=2
     rm -rf /var/run/secrets/kubernetes.io/serviceaccount
     exit
     EOF

@@ -27,6 +27,8 @@ spec:
       containers:
         - command:
             - /manager
+          args:
+            - --v=2
           image: {{ .Values.manager.image }}
           imagePullPolicy: {{ .Values.manager.imagePullPolicy }}
           name: yurt-operator-manager
