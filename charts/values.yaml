@@ -22,7 +22,6 @@ yurt-controller-manager:
     imagePullPolicy: IfNotPresent
     nodeSelector:
       openyurt.io/is-edge-worker: "false"
-      beta.kubernetes.io/arch: amd64
       beta.kubernetes.io/os: linux
     tolerations:
       - key: node-role.kubernetes.io/master

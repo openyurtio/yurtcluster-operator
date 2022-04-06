@@ -41,6 +41,7 @@ spec:
           args:
             - --node-name=$(NODE_NAME)
             - --trans-health-check-timeout={{ .Values.agent.transHealthCheckTimeout }}
+            - --v=2
           image: {{ .Values.agent.image }}
           imagePullPolicy: {{ .Values.agent.imagePullPolicy }}
           name: yurt-operator-agent
