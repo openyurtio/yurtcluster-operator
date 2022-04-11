@@ -25,7 +25,7 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
       - name: Daily Release
-        run: make docker-push
+        run: make docker-push DOCKER_BUILD_GO_PROXY_ARG=GOPROXY=https://proxy.golang.org,direct
   docker-push-ali-registry:
     runs-on: ubuntu-18.04
     steps:
@@ -43,4 +43,4 @@ jobs:
           username: ${{ secrets.ALI_REGISTRY_USERNAME }}
           password: ${{ secrets.ALI_REGISTRY_PASSWORD }}
       - name: Daily Release
-        run: make docker-push REPO=${{ env.ALI_REGISTRY }}
+        run: make docker-push DOCKER_BUILD_GO_PROXY_ARG=GOPROXY=https://proxy.golang.org,direct REPO=${{ env.ALI_REGISTRY }}
