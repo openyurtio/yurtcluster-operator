@@ -1,54 +1,25 @@
 # YurtCluster Operator
 
-## Quick Start
+**IMPORTANT: This project is no longer being actively maintained and has been archived.**
 
-### Prepare a Kubernetes cluster
+## Archived Project
 
-```shell
-# cat <<EOF | kind create cluster --config=-
-kind: Cluster
-apiVersion: kind.x-k8s.io/v1alpha4
-nodes:
-- role: control-plane
-- role: worker
-- role: worker
-- role: worker
-EOF
-```
+This project has been archived and is no longer being actively maintained. This means you can view and copy the code, but cannot make changes or propose pull requests.
 
-### Install YurtCluster Operator
+While you're here, feel free to review the code and learn from it. If you wish to use the code or revive the project, you can fork it to your own GitHub account.
 
-```shell
-# helm install operator ./charts -n kube-system
-```
+## Project Description
 
-### Convert the cluster to Yurt cluster
+YurtCluster Operator creates and manages OpenYurt cluster atop Kubernetes.
 
-```shell
-# kubectl apply -f ./config/samples/operator_v1alpha1_yurtcluster.yaml
-```
+## Previous Contributions
 
-### Convert a Node to Cloud Node
+We want to take a moment to thank all of the previous contributors to this project. Your work has been greatly appreciated and has made a significant impact.
 
-```shell
-# kubectl label node <NODE_NAME> openyurt.io/node-type=cloud
-```
+- [SataQiu](https://github.com/SataQiu)
+- [huiwq1990](https://github.com/huiwq1990)
+- [rambohe-ch](https://github.com/rambohe-ch)
 
-### Convert a Node to Edge Node
+## Alternative Projects
 
-```shell
-# kubectl label node <NODE_NAME> openyurt.io/node-type=edge
-```
-
-### Revert a Node to Normal Node
-
-```shell
-# kubectl label node <NODE_NAME> openyurt.io/node-type-
-```
-
-### Revert the cluster to normal
-
-```shell
-# kubectl delete yurtclusters cluster
-# helm uninstall operator -n kube-system
-```
+For guidance on how to install OpenYurt, please refer to the following link: https://openyurt.io/docs/installation/summary
